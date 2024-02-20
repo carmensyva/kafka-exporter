@@ -4,5 +4,5 @@ LABEL maintainer="Daniel Qian <qsj.daniel@gmail.com>"
 COPY kafka_exporter /bin/kafka_exporter
 
 EXPOSE 9308
-USER root
+USER 1000
 ENTRYPOINT ["/bin/sh", "-c", "/bin/kafka_exporter --kafka.server=${KAFKA_SERVER}:443 --sasl.enabled --sasl.username=${KAFKA_USERNAME} --sasl.password=${KAFKA_PASSWORD} --sasl.mechanism=PLAIN --tls.enabled --topic.workers=100 --topic.exclude=${TOPIC_EXCLUDE} --group.exclude=${GROUP_EXCLUDE} --offset.show-all"]
