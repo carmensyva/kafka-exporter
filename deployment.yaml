@@ -1,0 +1,67 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kafka-exporter
+  namespace: confluent
+  labels:
+    app: kafka-exporter
+    app.kubernetes.io/component: kafka-exporter
+    app.kubernetes.io/instance: kafka-exporter
+    app.kubernetes.io/name: kafka-exporter
+    app.openshift.io/runtime: kafka-exporter-new
+    app.openshift.io/runtime-namespace: confluent
+    app.openshift.io/runtime-version: '4.2'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-exporter
+        deploymentconfig: kafka-exporter
+    spec:
+      containers:
+        - name: kafka-exporter
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/confluent/kafka-exporter:latest
+          ports:
+            - containerPort: 9308
+              protocol: TCP
+          env:
+            - name: KAFKA_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-exporter
+                  key: KAFKA_SERVER
+            - name: KAFKA_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-exporter
+                  key: KAFKA_USERNAME
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-exporter
+                  key: KAFKA_PASSWORD
+            - name: TOPIC_EXCLUDE
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-exporter
+                  key: TOPIC_EXCLUDE
+            - name: GROUP_EXCLUDE
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-exporter
+                  key: GROUP_EXCLUDE
+          resources: {}
+          imagePullPolicy: Always
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
