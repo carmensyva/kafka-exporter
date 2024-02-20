@@ -1,7 +1,7 @@
 FROM quay.io/prometheus/busybox:latest
 LABEL maintainer="Daniel Qian <qsj.daniel@gmail.com>"
 
-COPY kafka_exporter-1.7.0.linux-amd64/kafka_exporter /bin/kafka_exporter
+COPY kafka_exporter /bin/kafka_exporter
 
 EXPOSE 9308
 USER nobody
